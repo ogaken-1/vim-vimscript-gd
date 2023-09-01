@@ -31,8 +31,7 @@ function! s:SearchAutoloadSymbol(word) abort
 endfunction
 
 function! s:FindRoot(path, pattern) abort
-  const start = a:path->isdirectory() ? a:path : a:path->fnamemodify(':p:h')
-  let dir = start
+  let dir = a:path->isdirectory() ? a:path : a:path->fnamemodify(':p:h')
   while dir !=# '/'
         \ && dir->readdir({ fname -> fname =~# a:pattern })->len() ==# 0
     let dir = dir->fnamemodify(':h')
