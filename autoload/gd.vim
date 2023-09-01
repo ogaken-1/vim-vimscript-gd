@@ -42,8 +42,9 @@ endfunction
 
 function! s:SearchScriptLocalSymbol(word) abort
   call cursor(1, 1)
-  call search(a:word->printf('\V'..s:defcmd..'\s\zs\<%s\>'))
-  let @/ = a:word->matchstr('s:\zs\w\+')->printf('\V\<s:\zs%s\>')
+  const word = a:word->matchstr('s:\zs\w\+')
+  call search(word->printf('\V'..s:defcmd..'\s\<s:\zs%s\>'))
+  let @/ = word->printf('\V\<s:\zs%s\>')
 endfunction
 
 function! s:SearchFunctionArgumentSymbol(word) abort
