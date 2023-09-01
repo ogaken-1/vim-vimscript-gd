@@ -20,11 +20,24 @@ function! s:SearchAutoloadSymbol(word) abort
         \ ->substitute('/$', '', '')
         \ ->printf('autoload/%s.vim')
   const files = fname->globpath(&rtp, v:true, v:true)
+        \ ?? &l:buftype ==# ''
+        \ ? fname->globpath(s:FindRoot(bufname(), '.git'), v:true, v:true)
+        \ : []
   if files->len() ==# 1
     exe 'edit' files[0]
     call search(a:word->printf('\V'..s:defcmd..'\s\zs\<%s\>'))
     let @/ = a:word->printf('\V\<%s\>')
   endif
+endfunction
+
+function! s:FindRoot(path, pattern) abort
+  const start = a:path->isdirectory() ? a:path : a:path->fnamemodify(':p:h')
+  let dir = start
+  while dir !=# '/'
+        \ && dir->readdir({ fname -> fname =~# a:pattern })->len() ==# 0
+    let dir = dir->fnamemodify(':h')
+  endwhile
+  return dir
 endfunction
 
 function! s:SearchScriptLocalSymbol(word) abort
@@ -40,3 +53,5 @@ function! s:SearchFunctionArgumentSymbol(word) abort
   call search(pattern, 'b')
   let @/ = a:word->matchstr('a:\zs\w\+')->printf('\V\<\%(a:\)\?%s\>')
 endfunction
+
+" vim:cc=78 tw=78 fo+=t
