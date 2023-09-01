@@ -11,7 +11,8 @@ function! gd#jump(word) abort
   endif
 endfunction
 
-const s:defcmd = '\%(\<function\>!\?\|\<let\>\|\<const\>\)'
+const s:funcDefPattern = '\<function\>!\?'
+const s:defcmd = '\%('..s:funcDefPattern..'\|\<let\>\|\<const\>\)'
 
 function! s:SearchAutoloadSymbol(word) abort
   const fname = a:word
@@ -46,13 +47,20 @@ function! s:SearchScriptLocalSymbol(word) abort
 endfunction
 
 function! s:SearchFunctionArgumentSymbol(word) abort
-  const pattern = a:word
-        \ ->matchstr('a:\zs\w\+')
-        \ ->printf('\V\<function\>!\?\.\+\zs%s')
-  const start = searchpos(pattern, 'b')
+  if a:word =~# 'a:\%(\d\|000\)'
+    const pattern = '\V'..s:funcDefPattern..'\.\+\zs...'
+    const word = '\%(\d\|000\)'
+    const start = searchpos(pattern, 'b')
+    const inFuncDefStatement = printf('\%%%dl...', start[0])
+  else
+    const pattern = a:word
+          \ ->matchstr('a:\zs\w\+')
+          \ ->printf('\V'..s:funcDefPattern..'\.\+\zs%s')
+    const word = a:word->matchstr('a:\zs\w\+')
+    const start = searchpos(pattern, 'b')
+    const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
+  endif
   const end = searchpos('^\s*endfunction', 'n')
-  const word = a:word->matchstr('a:\zs\w\+')
-  const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
   const inFuncBodyStatement = printf(
         \ '\%%>%dl\%%<%dl\<a:\zs%s\>',
         \ start[0],
