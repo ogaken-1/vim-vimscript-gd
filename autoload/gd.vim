@@ -50,7 +50,7 @@ function! s:SearchFunctionArgumentSymbol(word) abort
         \ ->matchstr('a:\zs\w\+')
         \ ->printf('\V\<function\>!\?\.\+\zs%s')
   const start = searchpos(pattern, 'b')
-  const end = searchpos('^endfunction', 'n')
+  const end = searchpos('^\s*endfunction', 'n')
   const word = a:word->matchstr('a:\zs\w\+')
   const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
   const inFuncBodyStatement = printf(
