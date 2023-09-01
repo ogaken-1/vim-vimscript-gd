@@ -50,8 +50,20 @@ function! s:SearchFunctionArgumentSymbol(word) abort
   const pattern = a:word
         \ ->matchstr('a:\zs\w\+')
         \ ->printf('\V\<function\>!\?\.\+\zs%s')
-  call search(pattern, 'b')
-  let @/ = a:word->matchstr('a:\zs\w\+')->printf('\V\<\%(a:\)\?%s\>')
+  const start = searchpos(pattern, 'b')
+  const end = searchpos('^endfunction', 'n')
+  const word = a:word->matchstr('a:\zs\w\+')
+  const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
+  const inFuncBodyStatement = printf(
+        \ '\%%>%dl\%%<%dl\<a:%s\>',
+        \ start[0],
+        \ end[0],
+        \ word)
+  let @/ = printf(
+        \ '\V\%(%s\|%s\)',
+        \ inFuncDefStatement,
+        \ inFuncBodyStatement
+        \)
 endfunction
 
 " vim:cc=78 tw=78 fo+=t
