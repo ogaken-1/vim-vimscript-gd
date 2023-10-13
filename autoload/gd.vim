@@ -58,11 +58,11 @@ function! s:SearchFunctionArgumentSymbol(word) abort
     const start = searchpos(pattern, 'b')
     const inFuncDefStatement = printf('\%%%dl...', start[0])
   else
-    const pattern = a:word
+    const start = a:word
           \ ->matchstr('a:\zs\w\+')
-          \ ->printf('\V'..s:funcDefPattern..'\.\+\zs%s')
+          \ ->printf('\V'..s:Sub(s:funcDefPattern, '%', '%%')..'\.\+\zs%s')
+          \ ->searchpos('b')
     const word = a:word->matchstr('a:\zs\w\+')
-    const start = searchpos(pattern, 'b')
     const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
   endif
   const end = searchpos('^\s*endfu\%[nction]', 'n')
