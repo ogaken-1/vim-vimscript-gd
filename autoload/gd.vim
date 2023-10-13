@@ -6,7 +6,7 @@ function! gd#jump(word) abort
   elseif a:word =~# 'a:\w\+'
     call s:SearchFunctionArgumentSymbol(a:word)
   else
-    normal! gd
+    call search(s:defcmd..'\s\+\zs'..a:word, 'bc')
     let @/ = a:word->printf('\V\<%s\>')
   endif
 endfunction
