@@ -11,8 +11,12 @@ function! gd#jump(word) abort
   endif
 endfunction
 
-const s:funcDefPattern = '\<fu\%(n\?c\?t\?i\?o\?n\?\)\?\>!\?'
+const s:funcDefPattern = '\<fu\%[nction]\>!\?'
 const s:defcmd = '\%('..s:funcDefPattern..'\|\<let\>\|\<const\>\)'
+
+function! s:Sub(text, from, to) abort
+  return a:text->substitute(a:from, a:to, 'g')
+endfunction
 
 function! s:SearchAutoloadSymbol(word) abort
   const fname = a:word
@@ -26,7 +30,7 @@ function! s:SearchAutoloadSymbol(word) abort
         \ : []
   if files->len() ==# 1
     exe 'edit' files[0]
-    call search(a:word->printf('\V'..s:defcmd..'\s\zs\<%s\>'))
+    call search(a:word->printf('\V'..s:Sub(s:defcmd, '%', '%%')..'\s\zs\<%s\>'))
     let @/ = a:word->printf('\V\<%s\>')
   endif
 endfunction
@@ -43,7 +47,7 @@ endfunction
 function! s:SearchScriptLocalSymbol(word) abort
   call cursor(1, 1)
   const word = a:word->matchstr('s:\zs\w\+')
-  call search(word->printf('\V'..s:defcmd..'\s\<s:\zs%s\>'))
+  call search(word->printf('\V'..s:Sub(s:defcmd, '%', '%%')..'\s\<s:\zs%s\>'))
   let @/ = word->printf('\V\<s:\zs%s\>')
 endfunction
 
@@ -61,7 +65,7 @@ function! s:SearchFunctionArgumentSymbol(word) abort
     const start = searchpos(pattern, 'b')
     const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
   endif
-  const end = searchpos('^\s*endfu\%(n\?c\?t\?i\?o\?n\?\)\?', 'n')
+  const end = searchpos('^\s*endfu\%[nction]', 'n')
   const inFuncBodyStatement = printf(
         \ '\%%>%dl\%%<%dl\<a:\zs%s\>',
         \ start[0],
