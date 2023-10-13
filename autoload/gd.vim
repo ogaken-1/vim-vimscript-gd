@@ -61,7 +61,7 @@ function! s:SearchFunctionArgumentSymbol(word) abort
     const start = searchpos(pattern, 'b')
     const inFuncDefStatement = printf('\%%%dl\<%s\>', start[0], word)
   endif
-  const end = searchpos('^\s*endfunction', 'n')
+  const end = searchpos('^\s*endfu\%(n\?c\?t\?i\?o\?n\?\)\?', 'n')
   const inFuncBodyStatement = printf(
         \ '\%%>%dl\%%<%dl\<a:\zs%s\>',
         \ start[0],
