@@ -11,7 +11,7 @@ function! gd#jump(word) abort
   endif
 endfunction
 
-const s:funcDefPattern = '\<function\>!\?'
+const s:funcDefPattern = '\<fu\%(n\?c\?t\?i\?o\?n\?\)\?\>!\?'
 const s:defcmd = '\%('..s:funcDefPattern..'\|\<let\>\|\<const\>\)'
 
 function! s:SearchAutoloadSymbol(word) abort
