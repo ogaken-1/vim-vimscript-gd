@@ -29,7 +29,11 @@ function! s:SearchAutoloadSymbol(word) abort
         \ ? fname->globpath(s:FindRoot(bufname(), '.git'), v:true, v:true)
         \ : []
   if files->len() ==# 1
-    exe 'edit' files[0]
+    const file = files[0]
+    if !file->bufexists()
+      call bufadd(file)
+    endif
+    exe 'buffer' file->bufnr()
     call search(a:word->printf('\V'..s:Sub(s:defcmd, '%', '%%')..'\s\zs\<%s\>'))
     let @/ = a:word->printf('\V\<%s\>')
   endif
