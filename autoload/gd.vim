@@ -1,13 +1,18 @@
-function! gd#jump(word) abort
-  if a:word =~# '^\%(\w\+#\)\+'
-    call s:SearchAutoloadSymbol(a:word)
-  elseif a:word =~# 's:\w\+'
-    call s:SearchScriptLocalSymbol(a:word)
-  elseif a:word =~# 'a:\w\+'
-    call s:SearchFunctionArgumentSymbol(a:word)
+function! gd#jump() abort
+  let isk = &iskeyword
+  setl isk+=:
+  const word = expand('<cword>')
+  let &iskeyword = isk
+
+  if word =~# '^\%(\w\+#\)\+'
+    call s:SearchAutoloadSymbol(word)
+  elseif word =~# 's:\w\+'
+    call s:SearchScriptLocalSymbol(word)
+  elseif word =~# 'a:\w\+'
+    call s:SearchFunctionArgumentSymbol(word)
   else
-    call search(s:defcmd..'\s\+\zs'..a:word, 'bc')
-    let @/ = a:word->printf('\V\<%s\>')
+    call search(s:defcmd..'\s\+\zs'..word, 'bc')
+    let @/ = word->printf('\V\<%s\>')
   endif
 endfunction
 

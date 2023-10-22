@@ -8,10 +8,6 @@ SUPPORTED SYMBOL KINDS			*vimscript-gd-supported-symbol-kinds*
 ==============================================================================
 OPTIONS							*vimscript-gd-options*
 
-g:gd_dont_touch_iskeyword 			*g:gd_dont_touch_iskeyword*
-
-	Default: |v:false|
-
 g:gd_disable_default_mapping 			*g:gd_disable_default_mapping*
 
 	Default: |v:false|
