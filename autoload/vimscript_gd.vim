@@ -1,4 +1,4 @@
-function! gd#jump() abort
+function! vimscript_gd#jump() abort
   let isk = &iskeyword
   setl isk+=:
   const word = expand('<cword>')
